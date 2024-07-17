@@ -565,7 +565,6 @@ function incrementValue(label)
     end
 end
 
--- Funktion zum Dekrementieren der Werte
 function decrementValue(label)
     return function()
         local currentValue = tonumber(guiGetText(MSInput[label])) or 0
@@ -632,10 +631,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	mainWindow = guiCreateWindow((sw - 800) / 2, (sh - 800) / 2, 800, 720, "Settings", false)
 	guiSetAlpha(mainWindow, 0.75)
 	local x, y, w, h = 10, 27, 55, 18
-	-- Create a tab panel inside mainWindow
 	local tabPanel = guiCreateTabPanel(10, 30, 780, 650, false, mainWindow)
-
-	-- Create a tab (world_props_window) inside the tab panel
 	local world_props_window = guiCreateTab("World Properties", tabPanel)
 
 	x, y = 10, 20
@@ -837,7 +833,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	local x, y, w, h = 125, 27, 55, 18
 	freezePropUpdate = false
 	showCursor(true)
-	-- Sky Gradient Tab
+	-- Sky Gradient
 	skyGradientTab = guiCreateTab("Sky Gradient, Water Color, Weather & Time", tabPanel)
 	local labels = {"topRed", "topGreen", "topBlue", "bottomRed", "bottomGreen", "bottomBlue"}
 
@@ -884,7 +880,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	end, false)
 	getSkyGradientCall()
 
-	-- Water Color Tab
+	-- Water Color
 	x, y = 125, 27
 	labels = {"Red", "Green", "Blue", "Alpha"}
 
@@ -931,7 +927,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	end, false)
 	getWaterColorCall()
 
-	-- Weather Tab
+	-- Weather
 	x, y = 125, 27
 	labels = {"Weather"}
 
@@ -978,7 +974,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	end, false)
 	getWeatherCall()
 
-	-- Time Tab
+	-- Time
 	local x, y = 325, 27
 	local labels = {"Hour", "Minute"}
 
@@ -1047,7 +1043,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	end, false)
 
 	getTimeCall()
-	-- Color Filter Tab
+	-- Color Filter
 	local colorFilterTab = guiCreateTab("Color Filter, Heat Haze & Wind Velocity", tabPanel)
 	local x, y = 125, 27
 	local labels = {"Red A", "Green A", "Blue A", "Alpha A", "Red B", "Green B", "Blue B", "Alpha B"}
@@ -1097,7 +1093,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	end, false)
 
 	saveCurrentColorFilter()
-	--Heat Haze Tab
+	--Heat Haze
 	local x, y = 125, 27
 	local heatlabels = {"Intensity", "Random Shift", "SpeedMin", "SpeedMax", "ScanSizeX", "ScanSizeY", "RenderSizeX", "RenderSizeY"}
 	
@@ -1147,7 +1143,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	end, false)
 
 	getHeatHazeCall()
-	--Wind Velocity Tab
+	--Wind Velocity
 	local x, y = 125, 27
 	local windLabels = {"VelocityX", "VelocityY", "VelocityZ"}
 
@@ -1195,7 +1191,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	end, false)
 
 	getWindVelocityCall()
-	--Sun Color Tab
+	--Sun Color
 	local sunColorTab = guiCreateTab("Sun Color", tabPanel)
 	local x, y = 125, 27
 	local sunColorLabels = {"Red A", "Green A", "Blue A", "Red B", "Green B", "Blue B"}
