@@ -1,4 +1,4 @@
-# Dynamic Environment Editor
+# Dynamic Environment Editor Version 1.0 for MTA:SA
 A tool to help you preview all modifiable settings inside your server for whatever use you desire.
 
 This is an ongoing project that got its origin from https://wiki.multitheftauto.com/wiki/SetWorldProperty as I wanted to have a quick way of finding certain settings for my maps.
