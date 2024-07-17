@@ -132,25 +132,27 @@ local HeatHazeInputs, HeatHazeSliders = {}, {}
 local heatHaze = {}
 
 function updateHeatHaze()
-    local intensity = tonumber(guiGetText(HeatHazeInputs["Intensity"])) or 0
-    local randomShift = tonumber(guiGetText(HeatHazeInputs["Random Shift"])) or 0
-    local speedMin = tonumber(guiGetText(HeatHazeInputs["SpeedMin"])) or 0
-    local speedMax = tonumber(guiGetText(HeatHazeInputs["SpeedMax"])) or 0
-    local scanSizeX = tonumber(guiGetText(HeatHazeInputs["ScanSizeX"])) or 0
-    local scanSizeY = tonumber(guiGetText(HeatHazeInputs["ScanSizeY"])) or 0
-    local renderSizeX = tonumber(guiGetText(HeatHazeInputs["RenderSizeX"])) or 0
-    local renderSizeY = tonumber(guiGetText(HeatHazeInputs["RenderSizeY"])) or 0
+    local inputs = {"Intensity", "Random Shift", "SpeedMin", "SpeedMax", "ScanSizeX", "ScanSizeY", "RenderSizeX", "RenderSizeY"}
+    local values = {}
+    for _, input in ipairs(inputs) do
+        table.insert(values, tonumber(guiGetText(HeatHazeInputs[input])) or 0)
+    end
     local bShowInside = false
-
-    setHeatHaze(intensity, randomShift, speedMin, speedMax, scanSizeX, scanSizeY, renderSizeX, renderSizeY, bShowInside)
+    setHeatHaze(values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], bShowInside)
 end
 
 local function getHeatHazeCall()
     heatHaze = {getHeatHaze()}
+	for i, label in ipairs({"Intensity", "Random Shift", "SpeedMin", "SpeedMax", "ScanSizeX", "ScanSizeY", "RenderSizeX", "RenderSizeY"}) do
+		local value = heatHaze[i]
+		guiSetText(HeatHazeInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(HeatHazeSliders[label], scrollPos)
+	end
     local heatHazeStr = ""
-    for i = 1, #heatHaze - 1 do
-        heatHazeStr = heatHazeStr .. tostring(heatHaze[i]) .. ", "
-    end
+		for i = 1, #heatHaze - 1 do
+			heatHazeStr = heatHazeStr .. tostring(heatHaze[i]) .. ", "
+		end
     heatHazeStr = heatHazeStr .. tostring(heatHaze[#heatHaze])
     outputDebugString("Saved Heat Haze: " .. heatHazeStr)
     return heatHaze
@@ -158,23 +160,12 @@ end
 
 function resetHeatHazeHandler()
     setHeatHaze(unpack(heatHaze))
-    guiSetText(HeatHazeInputs["Intensity"], tostring(heatHaze[1]))
-    guiSetText(HeatHazeInputs["Random Shift"], tostring(heatHaze[2]))
-    guiSetText(HeatHazeInputs["SpeedMin"], tostring(heatHaze[3]))
-    guiSetText(HeatHazeInputs["SpeedMax"], tostring(heatHaze[4]))
-    guiSetText(HeatHazeInputs["ScanSizeX"], tostring(heatHaze[5]))
-    guiSetText(HeatHazeInputs["ScanSizeY"], tostring(heatHaze[6]))
-    guiSetText(HeatHazeInputs["RenderSizeX"], tostring(heatHaze[7]))
-    guiSetText(HeatHazeInputs["RenderSizeY"], tostring(heatHaze[8]))
-
-	guiScrollBarSetScrollPosition(HeatHazeSliders["Intensity"], heatHaze[1] / 2.55)
-    guiScrollBarSetScrollPosition(HeatHazeSliders["Random Shift"], heatHaze[2] / 2.55)
-    guiScrollBarSetScrollPosition(HeatHazeSliders["SpeedMin"], heatHaze[3] / 2.55)
-    guiScrollBarSetScrollPosition(HeatHazeSliders["SpeedMax"], heatHaze[4] / 2.55)
-    guiScrollBarSetScrollPosition(HeatHazeSliders["ScanSizeX"], heatHaze[5] / 2.55)
-    guiScrollBarSetScrollPosition(HeatHazeSliders["ScanSizeY"], heatHaze[6] / 2.55)
-    guiScrollBarSetScrollPosition(HeatHazeSliders["RenderSizeX"], heatHaze[7] / 2.55)
-    guiScrollBarSetScrollPosition(HeatHazeSliders["RenderSizeY"], heatHaze[8] / 2.55)
+	for i, label in ipairs({"Intensity", "Random Shift", "SpeedMin", "SpeedMax", "ScanSizeX", "ScanSizeY", "RenderSizeX", "RenderSizeY"}) do
+		local value = heatHaze[i]
+		guiSetText(HeatHazeInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(HeatHazeSliders[label], scrollPos)
+	end
     updateHeatHaze()
 end
 
@@ -193,25 +184,24 @@ end
 
 local function getSunColorCall()
 	sunColor = {getSunColor()}
+	for i, label in ipairs({"Red A", "Green A", "Blue A", "Red B", "Green B", "Blue B"}) do
+		local value = sunColor[i]
+		guiSetText(sunColorInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(sunColorSliders[label], scrollPos)
+	end
 	outputDebugString("Saved Sun Color: " .. table.concat(sunColor, ", "))
 	return sunColor
 end
 
 function resetSunColorHandler()
 	setSunColor(unpack(sunColor))
-	guiSetText(sunColorInputs["Red A"], tostring(sunColor[1]))
-	guiSetText(sunColorInputs["Green A"], tostring(sunColor[2]))
-	guiSetText(sunColorInputs["Blue A"], tostring(sunColor[3]))
-	guiSetText(sunColorInputs["Red B"], tostring(sunColor[4]))
-	guiSetText(sunColorInputs["Green B"], tostring(sunColor[5]))
-	guiSetText(sunColorInputs["Blue B"], tostring(sunColor[6]))
-
-	guiScrollBarSetScrollPosition(sunColorSliders["Red A"], sunColor[1] / 2.55)
-	guiScrollBarSetScrollPosition(sunColorSliders["Green A"], sunColor[2] / 2.55)
-	guiScrollBarSetScrollPosition(sunColorSliders["Blue A"], sunColor[3] / 2.55)
-	guiScrollBarSetScrollPosition(sunColorSliders["Red B"], sunColor[4] / 2.55)
-	guiScrollBarSetScrollPosition(sunColorSliders["Green B"], sunColor[5] / 2.55)
-	guiScrollBarSetScrollPosition(sunColorSliders["Blue B"], sunColor[6] / 2.55)
+	for i, label in ipairs({"Red A", "Green A", "Blue A", "Red B", "Green B", "Blue B"}) do
+		local value = sunColor[i]
+		guiSetText(sunColorInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(sunColorSliders[label], scrollPos)
+	end
 	updateSunColor()
 end
 
@@ -221,32 +211,29 @@ function updateWindVelocity()
     local velocityX = tonumber(guiGetText(WindVelocityInputs["VelocityX"])) or 0
     local velocityY = tonumber(guiGetText(WindVelocityInputs["VelocityY"])) or 0
     local velocityZ = tonumber(guiGetText(WindVelocityInputs["VelocityZ"])) or 0
-
     setWindVelocity(velocityX, velocityY, velocityZ)
 end
 
 local function getWindVelocityCall()
     windVelocity = {getWindVelocity()}
-    local windVelocityStr = ""
-    for i = 1, #windVelocity - 1 do
-        windVelocityStr = windVelocityStr .. tostring(windVelocity[i]) .. ", "
-    end
-    windVelocityStr = windVelocityStr .. tostring(windVelocity[#windVelocity])
-    outputDebugString("Saved Wind Velocity: " .. windVelocityStr)
+    for i, label in ipairs({"VelocityX", "VelocityY", "VelocityZ"}) do
+		local value = windVelocity[i]
+		guiSetText(WindVelocityInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(WindVelocitySliders[label], scrollPos)
+	end
+    outputDebugString("Saved Wind Velocity: " .. table.concat(windVelocity, ", "))
     return windVelocity
 end
 
 function resetWindVelocityHandler()
     setWindVelocity(unpack(windVelocity))
-    guiSetText(WindVelocityInputs["VelocityX"], tostring(windVelocity[1]))
-    guiSetText(WindVelocityInputs["VelocityY"], tostring(windVelocity[2]))
-    guiSetText(WindVelocityInputs["VelocityZ"], tostring(windVelocity[3]))
-
-    -- Update sliders
-    guiScrollBarSetScrollPosition(WindVelocitySliders["VelocityX"], windVelocity[1] / 2.55)
-    guiScrollBarSetScrollPosition(WindVelocitySliders["VelocityY"], windVelocity[2] / 2.55)
-    guiScrollBarSetScrollPosition(WindVelocitySliders["VelocityZ"], windVelocity[3] / 2.55)
-    
+	for i, label in ipairs({"VelocityX", "VelocityY", "VelocityZ"}) do
+		local value = windVelocity[i]
+		guiSetText(WindVelocityInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(WindVelocitySliders[label], scrollPos)
+	end
     updateWindVelocity()
 end
 
@@ -259,25 +246,24 @@ end
 
 local function getSkyGradientCall()
 	skygradient = {getSkyGradient()}
+	for i, label in ipairs({"topRed", "topGreen", "topBlue", "bottomRed", "bottomGreen", "bottomBlue"}) do
+		local value = skygradient[i]
+		guiSetText(skygradientInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(skygradientSliders[label], scrollPos)
+	end
 	outputDebugString("Saved Sky Gradient: " .. table.concat(skygradient, ", "))
 	return skygradient
 end
 
 function resetSkyGradientHandler()
 	setSkyGradient(unpack(skygradient))
-	guiSetText(skygradientInputs["topRed"], tostring(skygradient[1]))
-	guiSetText(skygradientInputs["topGreen"], tostring(skygradient[2]))
-	guiSetText(skygradientInputs["topBlue"], tostring(skygradient[3]))
-	guiSetText(skygradientInputs["bottomRed"], tostring(skygradient[4]))
-	guiSetText(skygradientInputs["bottomGreen"], tostring(skygradient[5]))
-	guiSetText(skygradientInputs["bottomBlue"], tostring(skygradient[6]))
-
-	guiScrollBarSetScrollPosition(skygradientSliders["topRed"], skygradient[1] / 2.55)
-	guiScrollBarSetScrollPosition(skygradientSliders["topGreen"], skygradient[2] / 2.55)
-	guiScrollBarSetScrollPosition(skygradientSliders["topBlue"], skygradient[3] / 2.55)
-	guiScrollBarSetScrollPosition(skygradientSliders["bottomRed"], skygradient[4] / 2.55)
-	guiScrollBarSetScrollPosition(skygradientSliders["bottomGreen"], skygradient[5] / 2.55)
-	guiScrollBarSetScrollPosition(skygradientSliders["bottomBlue"], skygradient[6] / 2.55)
+	for i, label in ipairs({"topRed", "topGreen", "topBlue", "bottomRed", "bottomGreen", "bottomBlue"}) do
+		local value = skygradient[i]
+		guiSetText(skygradientInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(skygradientSliders[label], scrollPos)
+	end
 	updateSkyGradient()
 end
 
@@ -288,32 +274,41 @@ function updateWaterColor()
 	setWaterColor(unpack(watercolor))
 end
 
-local function getWaterColorCall()
+function getWaterColorCall()
 	watercolor = {getWaterColor()}
+	for i, label in ipairs({"Red", "Green", "Blue", "Alpha"}) do
+		local value = watercolor[i]
+		guiSetText(watercolorInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(watercolorSliders[label], scrollPos)
+	end
 	outputDebugString("Saved Water Color: " .. table.concat(watercolor, ", "))
 	return watercolor
 end
 
 function resetWaterColorHandler()
 	setWaterColor(unpack(watercolor))
-	guiSetText(watercolorInputs["Red"], tostring(watercolor[1]))
-	guiSetText(watercolorInputs["Green"], tostring(watercolor[2]))
-	guiSetText(watercolorInputs["Blue"], tostring(watercolor[3]))
-	guiSetText(watercolorInputs["Alpha"], tostring(watercolor[4]))
-
-	guiScrollBarSetScrollPosition(watercolorSliders["Red"], watercolor[1] / 2.55)
-	guiScrollBarSetScrollPosition(watercolorSliders["Green"], watercolor[2] / 2.55)
-	guiScrollBarSetScrollPosition(watercolorSliders["Blue"], watercolor[3] / 2.55)
-	guiScrollBarSetScrollPosition(watercolorSliders["Alpha"], watercolor[4] / 2.55)
+	for i, label in ipairs({"Red", "Green", "Blue", "Alpha"}) do
+		local value = watercolor[i]
+		guiSetText(watercolorInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(watercolorSliders[label], scrollPos)
+	end
 	updateWaterColor()
 end
 
 local weatherInputs, weatherSliders = {}, {}
 
-local function getWeatherCall()
-	weather = getWeather()
-	outputDebugString("Saved Weather: " .. weather)
-	return weather
+function getWeatherCall()
+	weatherARG = getWeather()
+	outputDebugString("Saved Weather: " .. weatherARG)
+	for _, label in ipairs({"Weather"}) do
+		local value = tonumber(weatherARG) or 0
+		guiSetText(weatherInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(weatherSliders[label], scrollPos)
+	end
+	return weatherARG
 end
 
 function updateWeather()
@@ -322,15 +317,19 @@ function updateWeather()
 end
 
 function resetWeatherHandler()
-	setWeather(weather)
-	guiSetText(weatherInputs["Weather"], tostring(weather))
-	guiScrollBarSetScrollPosition(weatherSliders["Weather"], weather)
+	setWeather(weatherARG)
+	for _, label in ipairs({"Weather"}) do
+		local value = tonumber(weatherARG) or 0
+		guiSetText(weatherInputs[label], tostring(value))
+		local scrollPos = math.ceil((value / 255) * 100)
+		guiScrollBarSetScrollPosition(weatherSliders[label], scrollPos)
+	end
 	updateWeather()
 end
 
 local timeInputs, timeSlider = {}, {}
 function getTimeCall()
-    local timehour, timeminute = getTime()
+    timehour, timeminute = getTime()
     outputDebugString("Saved Time: " .. timehour .. ":" .. timeminute)
     for _, label in ipairs({"Hour", "Minute"}) do
         local value
@@ -357,10 +356,19 @@ end
 
 function resetTimeHandler()
 	setTime(timehour, timeminute)
-	guiSetText(timeInputs["Hour"], tostring(timehour))
-	guiSetText(timeInputs["Minute"], tostring(timeminute))
-	guiScrollBarSetScrollPosition(timeSlider["Hour"], timehour)
-	guiScrollBarSetScrollPosition(timeSlider["Minute"], timeminute)
+	for _, label in ipairs({"Hour", "Minute"}) do
+        local value
+        if label == "Hour" then
+            value = tonumber(timehour) or 0
+        elseif label == "Minute" then
+            value = tonumber(timeminute) or 0
+        end
+        guiSetText(timeInputs[label], tostring(value))
+        local max_value = (label == "Hour") and 23 or 59
+        local scrollPos = (value / max_value) * 100
+        scrollPos = math.floor(scrollPos + 1)
+        guiScrollBarSetScrollPosition(timeSlider[label], scrollPos)
+    end
 	updateTime()
 end
 
@@ -831,15 +839,30 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	showCursor(true)
 	-- Sky Gradient Tab
 	skyGradientTab = guiCreateTab("Sky Gradient, Water Color, Weather & Time", tabPanel)
-	
 	local labels = {"topRed", "topGreen", "topBlue", "bottomRed", "bottomGreen", "bottomBlue"}
+
 	for _, label in ipairs(labels) do
 		guiCreateLabel(x, y, 130, h, label, false, skyGradientTab)
 		skygradientInputs[label] = guiCreateEdit(x, y + 20, w, h, "0", false, skyGradientTab)
 		skygradientSliders[label] = guiCreateScrollBar(x + 60, y, 15, 150, false, false, skyGradientTab)
+		incrementButtons[label] = guiCreateButton(x, y + 40, 20, 20, "+", false, skyGradientTab)
+		decrementButtons[label] = guiCreateButton(x, y + 60, 20, 20, "-", false, skyGradientTab)
+		for _, button in ipairs({incrementButtons[label], decrementButtons[label]}) do
+			addEventHandler("onClientGUIClick", button, function()
+				local value = tonumber(guiGetText(skygradientInputs[label])) or 0
+				if source == incrementButtons[label] then
+					value = value + 1
+				else
+					value = value - 1
+				end
+				guiSetText(skygradientInputs[label], tostring(value))
+				updateSkyGradient()
+			end, false)
+		end
 		guiScrollBarSetScrollPosition(skygradientSliders[label], 0)
 		x = x + w + 25
 	end
+
 	for key, slider in pairs(skygradientSliders) do
 		addEventHandler("onClientGUIScroll", slider, function()
 			local value = math.floor(guiScrollBarGetScrollPosition(slider) * 255/100)
@@ -847,11 +870,14 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 			updateSkyGradient()
 		end, false)
 	end
+
 	guiCreateLabel(30, y, 150, h, "Sky Gradient", false, skyGradientTab)
 	local applyButton = guiCreateButton(10, y + 20, 110, 25, "Save Sky Gradient", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", applyButton, getSkyGradientCall, false)
+
 	local resetButton = guiCreateButton(10, y + 60, 110, 25, "Reset Sky Gradient", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", resetButton, resetSkyGradientHandler, false)
+
 	local outputButton = guiCreateButton(10, y + 100, 110, 25, "Output", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", outputButton, function()
 		outputChatBox("setSkyGradient("..guiGetText(skygradientInputs["topRed"])..", "..guiGetText(skygradientInputs["topGreen"])..", "..guiGetText(skygradientInputs["topBlue"])..", "..guiGetText(skygradientInputs["bottomRed"])..", "..guiGetText(skygradientInputs["bottomGreen"])..", "..guiGetText(skygradientInputs["bottomBlue"])..")")
@@ -861,13 +887,29 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	-- Water Color Tab
 	x, y = 125, 27
 	labels = {"Red", "Green", "Blue", "Alpha"}
+
 	for _, label in ipairs(labels) do
 		guiCreateLabel(x, y+220, 130, h, label, false, skyGradientTab)
 		watercolorInputs[label] = guiCreateEdit(x, y + 240, w, h, "0", false, skyGradientTab)
 		watercolorSliders[label] = guiCreateScrollBar(x + 60, y+240, 15, 150, false, false, skyGradientTab)
+		incrementButtons[label] = guiCreateButton(x, y + 260, 20, 20, "+", false, skyGradientTab)
+		decrementButtons[label] = guiCreateButton(x, y + 280, 20, 20, "-", false, skyGradientTab)
+		for _, button in ipairs({incrementButtons[label], decrementButtons[label]}) do
+			addEventHandler("onClientGUIClick", button, function()
+				local value = tonumber(guiGetText(watercolorInputs[label])) or 0
+				if source == incrementButtons[label] then
+					value = value + 1
+				else
+					value = value - 1
+				end
+				guiSetText(watercolorInputs[label], tostring(value))
+				updateWaterColor()
+			end, false)
+		end
 		guiScrollBarSetScrollPosition(watercolorSliders[label], 0)
 		x = x + w + 25
 	end
+
 	for key, slider in pairs(watercolorSliders) do
 		addEventHandler("onClientGUIScroll", slider, function()
 			local value = math.floor(guiScrollBarGetScrollPosition(slider) * 255/100)
@@ -875,11 +917,14 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 			updateWaterColor()
 		end, false)
 	end
+
 	guiCreateLabel(35, y+220, 150, h, "Water Color", false, skyGradientTab)
 	applyButton = guiCreateButton(10, y + 240, 110, 25, "Save Water Color", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", applyButton, getWaterColorCall, false)
+
 	resetButton = guiCreateButton(10, y + 280, 110, 25, "Reset Water Color", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", resetButton, resetWaterColorHandler, false)
+
 	outputButton = guiCreateButton(10, y + 320, 110, 25, "Output", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", outputButton, function()
 		outputChatBox("setWaterColor("..guiGetText(watercolorInputs["Red"])..", "..guiGetText(watercolorInputs["Green"])..", "..guiGetText(watercolorInputs["Blue"])..", "..guiGetText(watercolorInputs["Alpha"])..")")
@@ -889,25 +934,44 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	-- Weather Tab
 	x, y = 125, 27
 	labels = {"Weather"}
+
 	for _, label in ipairs(labels) do
 		guiCreateLabel(x, y+420, 130, h, "ID", false, skyGradientTab)
 		weatherInputs[label] = guiCreateEdit(x, y + 440, w, h, "0", false, skyGradientTab)
 		weatherSliders[label] = guiCreateScrollBar(x + 60, y+440, 15, 150, false, false, skyGradientTab)
+		incrementButtons[label] = guiCreateButton(x, y + 460, 20, 20, "+", false, skyGradientTab)
+		decrementButtons[label] = guiCreateButton(x, y + 480, 20, 20, "-", false, skyGradientTab)
+		for _, button in ipairs({incrementButtons[label], decrementButtons[label]}) do
+			addEventHandler("onClientGUIClick", button, function()
+				local value = tonumber(guiGetText(weatherInputs[label])) or 0
+				if source == incrementButtons[label] then
+					value = value + 1
+				else
+					value = value - 1
+				end
+				guiSetText(weatherInputs[label], tostring(value))
+				updateWeather()
+			end, false)
+		end
 		guiScrollBarSetScrollPosition(weatherSliders[label], 0)
 		x = x + w + 25
 	end
+
 	for key, slider in pairs(weatherSliders) do
 		addEventHandler("onClientGUIScroll", slider, function()
-			local value = math.floor(guiScrollBarGetScrollPosition(slider)*1000/100)
+			local value = math.floor(guiScrollBarGetScrollPosition(slider)*255/100)
 			guiSetText(weatherInputs[key], tostring(value))
 			updateWeather()
 		end, false)
 	end
+
 	guiCreateLabel(45, y+420, 150, h, "Weather", false, skyGradientTab)
 	applyButton = guiCreateButton(10, y + 440, 110, 25, "Save Weather", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", applyButton, getWeatherCall, false)
+
 	resetButton = guiCreateButton(10, y + 480, 110, 25, "Reset Weather", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", resetButton, resetWeatherHandler, false)
+
 	outputButton = guiCreateButton(10, y + 520, 110, 25, "Output", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", outputButton, function()
 		outputChatBox("setWeather("..guiGetText(weatherInputs["Weather"])..")")
@@ -915,48 +979,101 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	getWeatherCall()
 
 	-- Time Tab
-	x, y = 325, 27
-	labels = {"Hour", "Minute"}
+	local x, y = 325, 27
+	local labels = {"Hour", "Minute"}
+
 	for _, label in ipairs(labels) do
 		guiCreateLabel(x, y+420, 130, h, label, false, skyGradientTab)
 		timeInputs[label] = guiCreateEdit(x, y + 440, w, h, "0", false, skyGradientTab)
 		timeSlider[label] = guiCreateScrollBar(x + 60, y+440, 15, 150, false, false, skyGradientTab)
+		incrementButtons[label] = guiCreateButton(x, y + 460, 20, 20, "+", false, skyGradientTab)
+		decrementButtons[label] = guiCreateButton(x, y + 480, 20, 20, "-", false, skyGradientTab)
+		for _, button in ipairs({incrementButtons[label], decrementButtons[label]}) do
+			addEventHandler("onClientGUIClick", button, function()
+				local value = tonumber(guiGetText(timeInputs[label])) or 0
+				if source == incrementButtons[label] then
+					value = value + 1
+				else
+					value = value - 1
+				end
+				guiSetText(timeInputs[label], tostring(value))
+				updateTime()
+			end, false)
+		end
 		guiScrollBarSetScrollPosition(timeSlider[label], 0)
 		x = x + w + 25
 	end
+
 	addEventHandler("onClientGUIScroll", timeSlider["Hour"], function()
 		local hourValue = math.floor(guiScrollBarGetScrollPosition(timeSlider["Hour"]) * 23/100)  -- Stunde von 0 bis 23
 		guiSetText(timeInputs["Hour"], tostring(hourValue))
 		updateTime()
 	end, false)
-	
+
 	addEventHandler("onClientGUIScroll", timeSlider["Minute"], function()
 		local minuteValue = math.floor(guiScrollBarGetScrollPosition(timeSlider["Minute"]) * 59/100)  -- Minute von 0 bis 59
 		guiSetText(timeInputs["Minute"], tostring(minuteValue))
 		updateTime()
 	end, false)
+
 	guiCreateLabel(253, y+420, 150, h, "Time", false, skyGradientTab)
-	applyButton = guiCreateButton(210, y + 440, 110, 25, "Save Time", false, skyGradientTab)
+	local applyButton = guiCreateButton(210, y + 440, 110, 25, "Save Time", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", applyButton, getTimeCall, false)
-	resetButton = guiCreateButton(210, y + 480, 110, 25, "Reset Time", false, skyGradientTab)
+
+	local resetButton = guiCreateButton(210, y + 480, 110, 25, "Reset Time", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", resetButton, resetTimeHandler, false)
-	outputButton = guiCreateButton(210, y + 520, 110, 25, "Output", false, skyGradientTab)
+
+	local outputButton = guiCreateButton(210, y + 520, 110, 25, "Output", false, skyGradientTab)
 	addEventHandler("onClientGUIClick", outputButton, function()
 		outputChatBox("setTime("..guiGetText(timeInputs["Hour"])..", "..guiGetText(timeInputs["Minute"])..")")
 	end, false)
-	getTimeCall()
 
+	--Checkbox Minute Duration Lock
+	local lockCheckBox = guiCreateCheckBox(210, y + 560, 150, 25, "Time Locked", true, false, skyGradientTab)
+	setMinuteDuration(2147483647)
+	addEventHandler("onClientGUIClick", lockCheckBox, function()
+		local isChecked = guiCheckBoxGetSelected(lockCheckBox, false)
+		if isChecked then
+			local hour = tonumber(guiGetText(timeInputs["Hour"])) or 0
+        	local minute = tonumber(guiGetText(timeInputs["Minute"])) or 0
+        	setTime(hour, minute)
+			setMinuteDuration(2147483647)
+		else 
+			local hour = tonumber(guiGetText(timeInputs["Hour"])) or 0
+        	local minute = tonumber(guiGetText(timeInputs["Minute"])) or 0
+			setTime(hour, minute)
+			setMinuteDuration(1000)
+		end
+	end, false)
+
+	getTimeCall()
 	-- Color Filter Tab
 	local colorFilterTab = guiCreateTab("Color Filter, Heat Haze & Wind Velocity", tabPanel)
-	x, y = 125, 27
-	labels = {"Red A", "Green A", "Blue A", "Alpha A", "Red B", "Green B", "Blue B", "Alpha B"}
+	local x, y = 125, 27
+	local labels = {"Red A", "Green A", "Blue A", "Alpha A", "Red B", "Green B", "Blue B", "Alpha B"}
+
 	for _, label in ipairs(labels) do
 		guiCreateLabel(x, y, 130, h, label, false, colorFilterTab)
 		inputs[label] = guiCreateEdit(x, y + 20, w, h, "0", false, colorFilterTab)
 		sliders[label] = guiCreateScrollBar(x + 60, y, 15, 150, false, false, colorFilterTab)
+		incrementButtons[label] = guiCreateButton(x, y + 40, 20, 20, "+", false, colorFilterTab)
+		decrementButtons[label] = guiCreateButton(x, y + 60, 20, 20, "-", false, colorFilterTab)
+		for _, button in ipairs({incrementButtons[label], decrementButtons[label]}) do
+			addEventHandler("onClientGUIClick", button, function()
+				local value = tonumber(guiGetText(inputs[label])) or 0
+				if source == incrementButtons[label] then
+					value = value + 1
+				else
+					value = value - 1
+				end
+				guiSetText(inputs[label], tostring(value))
+				updateColorFilter()
+			end, false)
+		end
 		guiScrollBarSetScrollPosition(sliders[label], 0)
 		x = x + w + 25
 	end
+
 	for key, slider in pairs(sliders) do
 		addEventHandler("onClientGUIScroll", slider, function()
 			local value = math.floor(guiScrollBarGetScrollPosition(slider) * 255/100)
@@ -964,19 +1081,22 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 			updateColorFilter()
 		end, false)
 	end
+
 	guiCreateLabel(35, y, 150, h, "Color Filter", false, colorFilterTab)
-	applyButton = guiCreateButton(10, y + 20, 100, 25, "Save Filter", false, colorFilterTab)
+	local applyButton = guiCreateButton(10, y + 20, 100, 25, "Save Filter", false, colorFilterTab)
 	addEventHandler("onClientGUIClick", applyButton, function()
 		saveCurrentColorFilter()
 	end, false)
-	resetButton = guiCreateButton(10, y + 60, 100, 25, "Reset Filter", false, colorFilterTab)
+
+	local resetButton = guiCreateButton(10, y + 60, 100, 25, "Reset Filter", false, colorFilterTab)
 	addEventHandler("onClientGUIClick", resetButton, resetColorFilterHandler, false)
-	outputButton = guiCreateButton(10, y + 100, 100, 25, "Output", false, colorFilterTab)
+
+	local outputButton = guiCreateButton(10, y + 100, 100, 25, "Output", false, colorFilterTab)
 	addEventHandler("onClientGUIClick", outputButton, function()
 		outputChatBox("setColorFilter("..guiGetText(inputs["Red A"])..", "..guiGetText(inputs["Green A"])..", "..guiGetText(inputs["Blue A"])..", "..guiGetText(inputs["Alpha A"])..", "..guiGetText(inputs["Red B"])..", "..guiGetText(inputs["Green B"])..", "..guiGetText(inputs["Blue B"])..", "..guiGetText(inputs["Alpha B"])..")")
 	end, false)
-	saveCurrentColorFilter()
 
+	saveCurrentColorFilter()
 	--Heat Haze Tab
 	local x, y = 125, 27
 	local heatlabels = {"Intensity", "Random Shift", "SpeedMin", "SpeedMax", "ScanSizeX", "ScanSizeY", "RenderSizeX", "RenderSizeY"}
@@ -985,10 +1105,24 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 		guiCreateLabel(x, y + 220, 130, 20, label, false, colorFilterTab)
 		HeatHazeInputs[label] = guiCreateEdit(x, y + 240, w, 20, "0", false, colorFilterTab)
 		HeatHazeSliders[label] = guiCreateScrollBar(x + 60, y + 240, 15, 150, false, false, colorFilterTab)
+		incrementButtons[label] = guiCreateButton(x, y + 260, 20, 20, "+", false, colorFilterTab)
+		decrementButtons[label] = guiCreateButton(x, y + 280, 20, 20, "-", false, colorFilterTab)
+		for _, button in ipairs({incrementButtons[label], decrementButtons[label]}) do
+			addEventHandler("onClientGUIClick", button, function()
+				local value = tonumber(guiGetText(HeatHazeInputs[label])) or 0
+				if source == incrementButtons[label] then
+					value = value + 1
+				else
+					value = value - 1
+				end
+				guiSetText(HeatHazeInputs[label], tostring(value))
+				updateHeatHaze()
+			end, false)
+		end
 		guiScrollBarSetScrollPosition(HeatHazeSliders[label], 0)
 		x = x + w + 25
 	end
-	
+
 	for key, slider in pairs(HeatHazeSliders) do
 		addEventHandler("onClientGUIScroll", slider, function()
 			local value = math.floor(guiScrollBarGetScrollPosition(slider) * 255/100)
@@ -996,20 +1130,22 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 			updateHeatHaze()
 		end, false)
 	end
+
 	guiCreateLabel(40, y + 220, 150, 20, "Heat Haze", false, colorFilterTab)
+
 	local applyButton = guiCreateButton(10, y + 240, 110, 25, "Save Heat Haze", false, colorFilterTab)
 	addEventHandler("onClientGUIClick", applyButton, function()
 		getHeatHazeCall()
 	end, false)
-	
+
 	local resetButton = guiCreateButton(10, y + 280, 110, 25, "Reset Heat Haze", false, colorFilterTab)
 	addEventHandler("onClientGUIClick", resetButton, resetHeatHazeHandler, false)
-	
+
 	local outputButton = guiCreateButton(10, y + 320, 110, 25, "Output", false, colorFilterTab)
 	addEventHandler("onClientGUIClick", outputButton, function()
 		outputChatBox("setHeatHaze(" .. guiGetText(HeatHazeInputs["Intensity"]) .. ", " .. guiGetText(HeatHazeInputs["Random Shift"]) .. ", " .. guiGetText(HeatHazeInputs["SpeedMin"]) .. ", " .. guiGetText(HeatHazeInputs["SpeedMax"]) .. ", " .. guiGetText(HeatHazeInputs["ScanSizeX"]) .. ", " .. guiGetText(HeatHazeInputs["ScanSizeY"]) .. ", " .. guiGetText(HeatHazeInputs["RenderSizeX"]) .. ", " .. guiGetText(HeatHazeInputs["RenderSizeY"]) .. ")")
 	end, false)
-	
+
 	getHeatHazeCall()
 	--Wind Velocity Tab
 	local x, y = 125, 27
@@ -1019,10 +1155,23 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 		guiCreateLabel(x, y + 420, 130, 20, label, false, colorFilterTab)
 		WindVelocityInputs[label] = guiCreateEdit(x, y + 440, w, 20, "0", false, colorFilterTab)
 		WindVelocitySliders[label] = guiCreateScrollBar(x + 60, y + 440, 15, 150, false, false, colorFilterTab)
+		incrementButtons[label] = guiCreateButton(x, y + 460, 20, 20, "+", false, colorFilterTab)
+		decrementButtons[label] = guiCreateButton(x, y + 480, 20, 20, "-", false, colorFilterTab)
+		for _, button in ipairs({incrementButtons[label], decrementButtons[label]}) do
+			addEventHandler("onClientGUIClick", button, function()
+				local value = tonumber(guiGetText(WindVelocityInputs[label])) or 0
+				if source == incrementButtons[label] then
+					value = value + 1
+				else
+					value = value - 1
+				end
+				guiSetText(WindVelocityInputs[label], tostring(value))
+				updateWindVelocity()
+			end, false)
+		end
 		guiScrollBarSetScrollPosition(WindVelocitySliders[label], 0)
 		x = x + w + 25
 	end
-
 	for key, slider in pairs(WindVelocitySliders) do
 		addEventHandler("onClientGUIScroll", slider, function()
 			local value = math.floor(guiScrollBarGetScrollPosition(slider) * 255/100)
@@ -1030,6 +1179,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 			updateWindVelocity()
 		end, false)
 	end
+
 	guiCreateLabel(27, y + 420, 150, 20, "Wind Velocity", false, colorFilterTab)
 	local applyButton = guiCreateButton(10, y + 440, 110, 25, "Save Wind Velocity", false, colorFilterTab)
 	addEventHandler("onClientGUIClick", applyButton, function()
@@ -1054,6 +1204,20 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 		guiCreateLabel(x, y, 130, h, label, false, sunColorTab)
 		sunColorInputs[label] = guiCreateEdit(x, y + 20, w, h, "0", false, sunColorTab)
 		sunColorSliders[label] = guiCreateScrollBar(x + 60, y, 15, 150, false, false, sunColorTab)
+		incrementButtons[label] = guiCreateButton(x, y + 40, 20, 20, "+", false, sunColorTab)
+		decrementButtons[label] = guiCreateButton(x, y + 60, 20, 20, "-", false, sunColorTab)
+		for _, button in ipairs({incrementButtons[label], decrementButtons[label]}) do
+			addEventHandler("onClientGUIClick", button, function()
+				local value = tonumber(guiGetText(sunColorInputs[label])) or 0
+				if source == incrementButtons[label] then
+					value = value + 1
+				else
+					value = value - 1
+				end
+				guiSetText(sunColorInputs[label], tostring(value))
+				updateSunColor()
+			end, false)
+		end
 		guiScrollBarSetScrollPosition(sunColorSliders[label], 0)
 		x = x + w + 25
 	end
@@ -1083,15 +1247,9 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	getSunColorCall()
 
 	local windowWidth, windowHeight = guiGetSize(mainWindow, false)
-	
-	-- Set the image path and adjust its position and size
-	local imagePath = "nova.png"  -- Adjust this to your actual image path
-	local imageX, imageY, imageW, imageH = 0, 0, windowWidth-25, windowHeight-100  -- Adjust position and size
-	
-	-- Create the image element with the size of mainWindow
+	local imagePath = "nova.png"
+	local imageX, imageY, imageW, imageH = 0, 0, windowWidth-25, windowHeight-100
 	local imageElement = guiCreateStaticImage(imageX+13, imageY+57, imageW, imageH, imagePath, false, mainWindow)
-	
-	-- Set alpha (transparency) of the image (0.5 for semi-transparent)
 	guiSetAlpha(imageElement, 0.5)
 	guiBringToFront(world_props_window)
 
