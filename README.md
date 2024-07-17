@@ -10,6 +10,8 @@ This is an ongoing project that got its origin from https://wiki.multitheftauto.
 - Added Time Lock > Default set to "True"
 - Added "save values" and updated "update values" to call every value for when you reopen the test inside the map editor
 - Slider position is now at the default value that has been saved on client resource start
+- Time/Weather slider values have been adjusted
+- General slider values are also now integers instead of floats
 
 ## DEE - Showcase
 
