@@ -27,3 +27,7 @@ This is an ongoing project that got its origin from https://wiki.multitheftauto.
 > Start your server and the resource "/start DEE"
 
 > Enjoy!
+### Finding the Lua
+> If you press the "output lua" button check your local MTASA folder -> mods -> deathmatch -> resource and search for "outputs"
+
+> You will then find a folder with either your first output or several others depending on how often you pressed the button
