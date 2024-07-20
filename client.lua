@@ -154,7 +154,6 @@ local function getHeatHazeCall()
 			heatHazeStr = heatHazeStr .. tostring(heatHaze[i]) .. ", "
 		end
     heatHazeStr = heatHazeStr .. tostring(heatHaze[#heatHaze])
-    outputDebugString("Saved Heat Haze: " .. heatHazeStr)
     return heatHaze
 end
 
@@ -190,7 +189,6 @@ local function getSunColorCall()
 		local scrollPos = math.ceil((value / 255) * 100)
 		guiScrollBarSetScrollPosition(sunColorSliders[label], scrollPos)
 	end
-	outputDebugString("Saved Sun Color: " .. table.concat(sunColor, ", "))
 	return sunColor
 end
 
@@ -222,7 +220,6 @@ local function getWindVelocityCall()
 		local scrollPos = math.ceil((value / 255) * 100)
 		guiScrollBarSetScrollPosition(WindVelocitySliders[label], scrollPos)
 	end
-    outputDebugString("Saved Wind Velocity: " .. table.concat(windVelocity, ", "))
     return windVelocity
 end
 
@@ -252,7 +249,6 @@ local function getSkyGradientCall()
 		local scrollPos = math.ceil((value / 255) * 100)
 		guiScrollBarSetScrollPosition(skygradientSliders[label], scrollPos)
 	end
-	outputDebugString("Saved Sky Gradient: " .. table.concat(skygradient, ", "))
 	return skygradient
 end
 
@@ -282,7 +278,6 @@ function getWaterColorCall()
 		local scrollPos = math.ceil((value / 255) * 100)
 		guiScrollBarSetScrollPosition(watercolorSliders[label], scrollPos)
 	end
-	outputDebugString("Saved Water Color: " .. table.concat(watercolor, ", "))
 	return watercolor
 end
 
@@ -301,7 +296,6 @@ local weatherInputs, weatherSliders = {}, {}
 
 function getWeatherCall()
 	weatherARG = getWeather()
-	outputDebugString("Saved Weather: " .. weatherARG)
 	for _, label in ipairs({"Weather"}) do
 		local value = tonumber(weatherARG) or 0
 		guiSetText(weatherInputs[label], tostring(value))
@@ -314,6 +308,16 @@ end
 function updateWeather()
 	local weather = tonumber(guiGetText(weatherInputs["Weather"])) or 0
 	setWeather(weather)
+	---------------------
+	resetColorFilter()
+	resetSunColor()
+	resetSkyGradient()
+	resetSunSize()
+	---------------------
+	getSkyGradientCall()
+	getSunColorCall()
+	getSunSize()
+	getCurrentColorFilter()
 end
 
 function resetWeatherHandler()
@@ -330,7 +334,6 @@ end
 local timeInputs, timeSlider = {}, {}
 function getTimeCall()
     timehour, timeminute = getTime()
-    outputDebugString("Saved Time: " .. timehour .. ":" .. timeminute)
     for _, label in ipairs({"Hour", "Minute"}) do
         local value
         if label == "Hour" then
@@ -352,6 +355,16 @@ function updateTime()
 	local hour = tonumber(guiGetText(timeInputs["Hour"])) or 0
 	local minute = tonumber(guiGetText(timeInputs["Minute"])) or 0
 	setTime(hour, minute)
+	---------------------
+	resetColorFilter()
+	resetSunColor()
+	resetSkyGradient()
+	resetSunSize()
+	---------------------
+	getSkyGradientCall()
+	getSunColorCall()
+	getSunSize()
+	getCurrentColorFilter()
 end
 
 function resetTimeHandler()
@@ -378,7 +391,6 @@ local savedColorFilter = {}
 local function saveCurrentColorFilter()
 	local aR,aG,aB,aA,bR,bG,bB,bA = getColorFilter(false)
 	savedColorFilter = {aR, aG, aB, aA, bR, bG, bB, bA}
-	outputDebugString("Saved Color Filter: " .. table.concat(savedColorFilter, ", "))
 	for i, label in ipairs({"Red A", "Green A", "Blue A", "Alpha A", "Red B", "Green B", "Blue B", "Alpha B"}) do
 		local value = savedColorFilter[i]
 		guiSetText(inputs[label], tostring(value))
@@ -404,10 +416,8 @@ end
 function resetColorFilterHandler()
 	if #savedColorFilter > 0 then
 		setColorFilter(unpack(savedColorFilter))
-		outputDebugString("Reset to Saved Color Filter: " .. table.concat(savedColorFilter, ", "))
 	else
 		resetColorFilter()
-		outputDebugString("Reset to Default Color Filter")
 	end
 
 	local labels = {"Red A", "Green A", "Blue A", "Alpha A", "Red B", "Green B", "Blue B", "Alpha B"}
