@@ -388,7 +388,7 @@ end
 local inputs, sliders = {}, {}
 local savedColorFilter = {}
 
-local function saveCurrentColorFilter()
+local function getCurrentColorFilter()
 	local aR,aG,aB,aA,bR,bG,bB,bA = getColorFilter(false)
 	savedColorFilter = {aR, aG, aB, aA, bR, bG, bB, bA}
 	for i, label in ipairs({"Red A", "Green A", "Blue A", "Alpha A", "Red B", "Green B", "Blue B", "Alpha B"}) do
@@ -769,7 +769,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 		for key, data in pairs(guiFields) do
 			saveWorldProperty(key)
 		end
-		saveCurrentColorFilter()
+		getCurrentColorFilter()
 		saveMoonSize()
 		saveSunSize()
 		saveFogDistance()
@@ -1091,7 +1091,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	guiCreateLabel(35, y, 150, h, "Color Filter", false, colorFilterTab)
 	local applyButton = guiCreateButton(10, y + 20, 100, 25, "Save Filter", false, colorFilterTab)
 	addEventHandler("onClientGUIClick", applyButton, function()
-		saveCurrentColorFilter()
+		getCurrentColorFilter()
 	end, false)
 
 	local resetButton = guiCreateButton(10, y + 60, 100, 25, "Reset Filter", false, colorFilterTab)
@@ -1102,7 +1102,7 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 		outputChatBox("setColorFilter("..guiGetText(inputs["Red A"])..", "..guiGetText(inputs["Green A"])..", "..guiGetText(inputs["Blue A"])..", "..guiGetText(inputs["Alpha A"])..", "..guiGetText(inputs["Red B"])..", "..guiGetText(inputs["Green B"])..", "..guiGetText(inputs["Blue B"])..", "..guiGetText(inputs["Alpha B"])..")")
 	end, false)
 
-	saveCurrentColorFilter()
+	getCurrentColorFilter()
 	--Heat Haze
 	local x, y = 125, 27
 	local heatlabels = {"Intensity", "Random Shift", "SpeedMin", "SpeedMax", "ScanSizeX", "ScanSizeY", "RenderSizeX", "RenderSizeY"}
