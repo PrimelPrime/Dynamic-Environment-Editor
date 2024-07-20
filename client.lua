@@ -388,7 +388,7 @@ end
 local inputs, sliders = {}, {}
 local savedColorFilter = {}
 
-local function getCurrentColorFilter()
+function getCurrentColorFilter()
 	local aR,aG,aB,aA,bR,bG,bB,bA = getColorFilter(false)
 	savedColorFilter = {aR, aG, aB, aA, bR, bG, bB, bA}
 	for i, label in ipairs({"Red A", "Green A", "Blue A", "Alpha A", "Red B", "Green B", "Blue B", "Alpha B"}) do
